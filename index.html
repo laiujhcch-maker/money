@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>櫃體估價</title>
+<title>櫃體估價 — 淘器設計</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap');
 
@@ -18,6 +18,7 @@
     --low: #6E7B5C;
     --low-tint: #EAEEE2;
     --total-bg: #26221C;
+    --line-green: #06C755;
   }
 
   *{ box-sizing: border-box; }
@@ -36,6 +37,15 @@
   .page{ width: 100%; max-width: 700px; }
 
   header{ margin-bottom: 40px; }
+
+  .back-link{
+    display:inline-block;
+    font-size: 13px;
+    color: var(--ink-soft);
+    text-decoration: none;
+    margin-bottom: 18px;
+  }
+  .back-link:hover{ color: var(--ink); }
 
   h1{
     font-family: 'Noto Serif TC', serif;
@@ -196,6 +206,7 @@
     align-items:center;
     flex-wrap: wrap;
     gap: 10px;
+    margin-bottom: 16px;
   }
   .total-bar .label{
     font-size: 12.5px;
@@ -208,6 +219,68 @@
     font-weight: 700;
   }
 
+  .contact{
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 20px 22px;
+  }
+  .contact .contact-label{
+    font-size: 12.5px;
+    color: var(--ink-soft);
+    margin-bottom: 12px;
+  }
+  .contact-buttons{
+    display:flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .contact-btn{
+    flex: 1;
+    min-width: 160px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap: 8px;
+    padding: 12px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    background: #FCFAF6;
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: border-color 0.15s ease, background 0.15s ease;
+    position: relative;
+  }
+  .contact-btn svg{ width: 18px; height: 18px; flex-shrink:0; }
+  .contact-btn:hover{ border-color: var(--ink); }
+  .contact-btn.line{ color: var(--line-green); border-color: #CDEBDA; background: #F3FBF6; }
+  .contact-btn.line:hover{ border-color: var(--line-green); }
+  .contact-btn.pdf{ color: var(--high); border-color: #EAD9C7; background: var(--high-tint); }
+  .contact-btn.pdf:hover{ border-color: var(--high); }
+  .contact-btn:disabled{ opacity: 0.6; pointer-events: none; }
+
+  .copy-toast{
+    position: absolute;
+    bottom: -26px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 11px;
+    color: var(--ink-soft);
+    background: var(--panel);
+    border: 1px solid var(--line);
+    padding: 3px 8px;
+    border-radius: 5px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    white-space: nowrap;
+  }
+  .copy-toast.show{ opacity: 1; }
+
   footer{
     margin-top: 24px;
     font-size: 11.5px;
@@ -215,12 +288,92 @@
     text-align: center;
   }
 
+  /* PDF 報表模板（畫面上不顯示，僅供匯出時擷取） */
+  #pdf-report{
+    position: fixed;
+    left: -9999px;
+    top: 0;
+    width: 780px;
+    background: #FFFFFF;
+    padding: 56px;
+    font-family: 'Inter', sans-serif;
+    color: var(--ink);
+  }
+  .rpt-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    border-bottom: 2px solid var(--ink);
+    padding-bottom: 22px;
+    margin-bottom: 30px;
+  }
+  .rpt-brand{ display:flex; align-items:center; gap: 12px; }
+  .rpt-mark{
+    width: 40px; height: 40px; border-radius: 8px;
+    background: var(--ink); color: #F8F5EF;
+    display:flex; align-items:center; justify-content:center;
+    font-family: 'Noto Serif TC', serif; font-weight: 700; font-size: 18px;
+  }
+  .rpt-brand-name{ font-size: 16px; font-weight: 700; }
+  .rpt-brand-sub{ font-size: 11px; color: var(--ink-soft); margin-top: 2px; }
+  .rpt-title{ text-align: right; }
+  .rpt-title h2{
+    font-family: 'Noto Serif TC', serif;
+    font-size: 22px; margin: 0 0 4px; font-weight: 700;
+  }
+  .rpt-title .rpt-date{ font-size: 12px; color: var(--ink-soft); }
+
+  .rpt-table{ width: 100%; border-collapse: collapse; margin-bottom: 28px; }
+  .rpt-table th{
+    text-align: left;
+    font-size: 12px;
+    color: var(--ink-soft);
+    font-weight: 600;
+    padding: 0 0 10px;
+    border-bottom: 1px solid var(--line);
+  }
+  .rpt-table th.num, .rpt-table td.num{ text-align: right; }
+  .rpt-table td{
+    padding: 16px 0;
+    border-bottom: 1px solid var(--line);
+    font-size: 14.5px;
+  }
+  .rpt-table td.item-name{ font-family: 'Noto Serif TC', serif; font-weight: 600; font-size: 15.5px; }
+  .rpt-table td.sub-value{ font-family: 'Noto Serif TC', serif; font-weight: 700; }
+
+  .rpt-total-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    background: var(--ink);
+    color: #F8F5EF;
+    border-radius: 8px;
+    padding: 18px 22px;
+    margin-bottom: 34px;
+  }
+  .rpt-total-row .rpt-total-label{ font-size: 13px; color: #B7AF9F; }
+  .rpt-total-row .rpt-total-value{
+    font-family: 'Noto Serif TC', serif;
+    font-size: 26px; font-weight: 700;
+  }
+
+  .rpt-footer{
+    display:flex;
+    justify-content:space-between;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+    font-size: 11.5px;
+    color: var(--ink-soft);
+  }
+  .rpt-note{ font-size: 11px; color: var(--ink-soft); margin-top: 10px; }
+
   @media (max-width: 540px){
     .card{ flex-direction: column; }
     .media{ width: 100%; min-height: 150px; }
     .row{ flex-direction: column; align-items: stretch; gap: 12px; }
     .field-row{ width: 100%; }
     .subtotal{ text-align: left; }
+    .contact-btn{ min-width: 100%; }
   }
 </style>
 </head>
@@ -228,6 +381,7 @@
 <div class="page">
 
   <header>
+    <a href="index.html" class="back-link">← 返回工具中心</a>
     <h1>櫃體估價</h1>
     <p>輸入尺數，即時換算金額，供估價參考。</p>
   </header>
@@ -299,11 +453,102 @@
     </div>
   </div>
 
+  <div class="contact">
+    <div class="contact-label">將估價結果傳送給我們</div>
+    <div class="contact-buttons">
+      <a class="contact-btn" id="email-btn" href="#" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.6"/>
+          <path d="M4 7l8 6 8-6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Email 聯繫
+      </a>
+      <button class="contact-btn line" id="line-btn" type="button">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 3C6.9 3 3 6.4 3 10.6c0 3.7 3.1 6.8 7.3 7.4-.1.6-.5 2-.6 2.4 0 0-.1.4.2.5.3.1.6-.1.9-.3.5-.4 2.4-1.7 3.1-2.2 3.9-.4 7.1-3.5 7.1-7.4C21 6.4 17.1 3 12 3z" fill="currentColor"/>
+        </svg>
+        加 LINE 好友
+        <span class="copy-toast" id="line-toast">已複製 LINE ID</span>
+      </button>
+      <button class="contact-btn pdf" id="pdf-btn" type="button">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+          <path d="M14 3v5h5" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+        </svg>
+        下載 PDF 報價單
+      </button>
+    </div>
+  </div>
+
   <footer>金額四捨五入至整數，僅供估算參考</footer>
 
 </div>
 
+<!-- PDF 報表模板：畫面上不會顯示，僅在下載 PDF 時擷取 -->
+<div id="pdf-report">
+  <div class="rpt-head">
+    <div class="rpt-brand">
+      <div class="rpt-mark">陶</div>
+      <div>
+        <div class="rpt-brand-name">淘器設計</div>
+        <div class="rpt-brand-sub">TAO QI DESIGN</div>
+      </div>
+    </div>
+    <div class="rpt-title">
+      <h2>櫃體估價單</h2>
+      <div class="rpt-date" id="rpt-date">—</div>
+    </div>
+  </div>
+
+  <table class="rpt-table">
+    <thead>
+      <tr>
+        <th>品項</th>
+        <th class="num">尺數</th>
+        <th class="num">單價</th>
+        <th class="num">小計</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="item-name">高櫃</td>
+        <td class="num" id="rpt-high-length">0 尺</td>
+        <td class="num" id="rpt-high-price">NT$ 0 / 尺</td>
+        <td class="num sub-value" id="rpt-high-sub">NT$ 0</td>
+      </tr>
+      <tr>
+        <td class="item-name">矮櫃</td>
+        <td class="num" id="rpt-low-length">0 尺</td>
+        <td class="num" id="rpt-low-price">NT$ 0 / 尺</td>
+        <td class="num sub-value" id="rpt-low-sub">NT$ 0</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="rpt-total-row">
+    <div class="rpt-total-label">總計</div>
+    <div class="rpt-total-value" id="rpt-total">NT$ 0</div>
+  </div>
+
+  <div class="rpt-footer">
+    <div>
+      <div>聯絡信箱：laiuj@msn.com</div>
+      <div>LINE ID：0958399049</div>
+    </div>
+    <div style="text-align:right">
+      <div>淘器設計</div>
+      <div>本報價單僅供估算參考</div>
+    </div>
+  </div>
+  <div class="rpt-note">金額四捨五入至整數，實際報價依現場丈量與確認建材為準。</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
+  const EMAIL = 'laiuj@msn.com';
+  const LINE_ID = '0958399049';
+
   function fmt(n){
     return 'NT$ ' + Math.round(n).toLocaleString('zh-TW');
   }
@@ -321,11 +566,93 @@
     document.getElementById('high-subtotal').textContent = fmt(highSub);
     document.getElementById('low-subtotal').textContent = fmt(lowSub);
     document.getElementById('grand-total').textContent = fmt(total);
+
+    const subject = '櫃體估價詢問';
+    const bodyLines = [
+      '您好，我想詢問以下估價內容：',
+      '',
+      '高櫃：' + highLength + ' 尺 x ' + highPrice + ' 元/尺 = ' + fmt(highSub),
+      '矮櫃：' + lowLength + ' 尺 x ' + lowPrice + ' 元/尺 = ' + fmt(lowSub),
+      '總計：' + fmt(total),
+      '',
+      '麻煩協助確認，謝謝！'
+    ];
+    const body = bodyLines.join('\n');
+    const mailto = 'mailto:' + EMAIL + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+    document.getElementById('email-btn').setAttribute('href', mailto);
+
+    // 同步更新 PDF 報表模板內容
+    document.getElementById('rpt-high-length').textContent = highLength + ' 尺';
+    document.getElementById('rpt-high-price').textContent = fmt(highPrice) + ' / 尺';
+    document.getElementById('rpt-high-sub').textContent = fmt(highSub);
+    document.getElementById('rpt-low-length').textContent = lowLength + ' 尺';
+    document.getElementById('rpt-low-price').textContent = fmt(lowPrice) + ' / 尺';
+    document.getElementById('rpt-low-sub').textContent = fmt(lowSub);
+    document.getElementById('rpt-total').textContent = fmt(total);
+  }
+
+  function todayStr(){
+    const d = new Date();
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return y + '-' + m + '-' + day;
+  }
+
+  async function downloadPDF(){
+    const btn = document.getElementById('pdf-btn');
+    const originalText = btn.innerHTML;
+    btn.disabled = true;
+    btn.textContent = '報表產生中…';
+
+    document.getElementById('rpt-date').textContent = '日期：' + todayStr();
+
+    try{
+      const reportEl = document.getElementById('pdf-report');
+      const canvas = await html2canvas(reportEl, { scale: 2, backgroundColor: '#ffffff' });
+      const imgData = canvas.toDataURL('image/jpeg', 0.95);
+
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      let imgWidth = pageWidth;
+      let imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+      if (imgHeight > pageHeight) {
+        imgHeight = pageHeight;
+        imgWidth = (canvas.width * imgHeight) / canvas.height;
+      }
+
+      const x = (pageWidth - imgWidth) / 2;
+      pdf.addImage(imgData, 'JPEG', x, 0, imgWidth, imgHeight);
+      pdf.save('淘器設計-估價單-' + todayStr() + '.pdf');
+    } catch (err) {
+      alert('PDF 產生失敗，請再試一次。');
+    }
+
+    btn.disabled = false;
+    btn.innerHTML = originalText;
   }
 
   ['high-price','high-length','low-price','low-length'].forEach(id=>{
     document.getElementById(id).addEventListener('input', calc);
   });
+
+  document.getElementById('line-btn').addEventListener('click', function(){
+    const toast = document.getElementById('line-toast');
+    const openUrl = 'https://line.me/ti/p/~' + LINE_ID;
+
+    if(navigator.clipboard){
+      navigator.clipboard.writeText(LINE_ID).then(function(){
+        toast.classList.add('show');
+        setTimeout(function(){ toast.classList.remove('show'); }, 1800);
+      }).catch(function(){});
+    }
+    window.open(openUrl, '_blank');
+  });
+
+  document.getElementById('pdf-btn').addEventListener('click', downloadPDF);
 
   calc();
 </script>
